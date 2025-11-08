@@ -10,6 +10,7 @@ const { SellsModel } = require("./model/SellsModel");
 const passport = require("passport");
 const LocalStratgy = require("passport-local");
 const User = require("./model/UserModel");
+const path = require("path");
 
 
 const PORT = process.env.PORT || 3002;
@@ -18,11 +19,14 @@ const url = process.env.MONGO_URL;
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
-app.use(passport.initialize());
 
+app.use(passport.initialize());
 passport.use(new LocalStratgy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
+
+app.use(express.static(path.join(__dirname, "../frontend/build")));
+app.use(express.static(path.join(__dirname, "../dashboard/build")));
 
 app.post("/signup", async (req, res) => {
   try {
@@ -244,6 +248,14 @@ app.post("/sellOrder", async (req, res) => {
   });
   sellOrder.save();
   res.send("Order Selled");
+});
+
+app.get((req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/build/index.html"));
+});
+
+app.get((req, res) => {
+  res.sendFile(path.join(__dirname, "../dashboard/build/index.html"));
 });
 
 app.listen(PORT, () => {
