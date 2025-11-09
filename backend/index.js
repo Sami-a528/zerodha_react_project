@@ -25,8 +25,8 @@ passport.use(new LocalStratgy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-app.use(express.static(path.join(__dirname, "../frontend/build")));
-app.use(express.static(path.join(__dirname, "../dashboard/build")));
+app.use("/", express.static(path.join(__dirname, "../frontend/build")));
+app.use("/dashboard", express.static(path.join(__dirname, "../dashboard/build")));
 
 app.post("/signup", async (req, res) => {
   try {
@@ -51,6 +51,7 @@ app.post("/login", async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 });
+
 
 
 // app.get("/addHoldings", async (req, res) => {
